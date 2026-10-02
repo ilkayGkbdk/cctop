@@ -9,7 +9,7 @@ export type BandData = { meters: Meters; agents: AgentRow[]; columns: number; cf
 
 const mini = (percent: number) => {
   const filled = Math.max(0, Math.min(8, Math.round(percent / 12.5)))
-  return '▮'.repeat(filled) + '▯'.repeat(8 - filled)
+  return '█'.repeat(filled) + '░'.repeat(8 - filled)
 }
 
 export const Band = (ui: ElementTable, d: BandData) => {

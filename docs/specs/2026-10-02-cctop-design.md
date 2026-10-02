@@ -104,7 +104,7 @@ tool reading transcript JSONL can only estimate these.
 ### Band (panel closed)
 
 ```
- cctop  CTX 56% ▮▮▮▮▮▯▯▯  5H 27%  WK 41%  84 tok/s  $3.42  ⑂ 3 agents
+ cctop  CTX 56% █████░░░  5H 27%  WK 41%  84 tok/s  $3.42  ⑂ 3 agents
 ```
 
 Hidden when there is nothing to show yet (no measurement received) or when

@@ -90,3 +90,24 @@ test('x on main toasts instead of confirming; stop flow on a subagent', async ($
   expect(await ui.find({ text: /stopped/ })).toBeDefined()
   await ui.unmount()
 })
+
+test('band mini bar uses glyphs common terminal fonts have', async ($, on) => {
+  const clock = setup(on, true)
+  await $.session.measure(measure(true))
+  await clock.advance(10)
+  const band = await $.ui.mount({ plugin: 'cctop', surface: 'terminal', ...BAND })
+  expect(await band.find({ text: /[▮▯]/ })).toBe(undefined)
+  expect(await band.find({ text: /CTX 56% █+░+/ })).toBeDefined()
+  await band.unmount()
+})
+
+test('wide panel shows full category names', async ($, on) => {
+  mock.clock(on, { now: 1_000_000 })
+  on('session.cwd', () => ({ value: '/work/api' }) as never)
+  on('ui.open', () => ({ value: { isPlaced: true } }) as never)
+  on('session.usage', () => ({ value: { startedAt: 1, context: { window: 200000, tokens: 1000, percent: 1, breakdown: { categories: [{ name: 'MCP server instructions', tokens: 1200, color: 'claude', kind: 'used' }], totalTokens: 1200, rawMaxTokens: 200000, gridRows: [[{ color: 'claude', isFilled: true }]] } }, rateLimits: [] } }) as never)
+  await $.command.run(run(''))
+  const ui = await $.ui.mount({ plugin: 'cctop', surface: 'terminal', ...PANE })
+  expect(await ui.find({ text: /MCP server instructions/ })).toBeDefined()
+  await ui.unmount()
+})

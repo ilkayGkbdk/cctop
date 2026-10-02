@@ -10,6 +10,7 @@ export const ContextMapView = (ui: ElementTable, map: MapSnapshot | null, column
   const { Box, Text } = ui
   if (map === null) return <Text dimColor> CONTEXT MAP  measuring…</Text>
   const showGrid = columns >= GRID_MIN_COLUMNS
+  const nameWidth = columns >= 100 ? 24 : 18
   return (
     <Box flexDirection="column">
       <Text bold>{` CONTEXT MAP${map.isStale ? '  (stale)' : ''}`}</Text>
@@ -31,7 +32,7 @@ export const ContextMapView = (ui: ElementTable, map: MapSnapshot | null, column
           {map.categories.map(c => (
             <Box flexDirection="row" gap={1}>
               <Text color={c.color}>{c.kind === 'free' ? '□' : '■'}</Text>
-              <Text>{c.name.slice(0, 18).padEnd(18)}</Text>
+              <Text>{c.name.slice(0, nameWidth).padEnd(nameWidth)}</Text>
               <Text>{fmtTokens(c.tokens).padStart(6)}</Text>
               <Text dimColor>{`${c.percent}%`.padStart(4)}</Text>
             </Box>

@@ -2,6 +2,8 @@
 
 **htop for Claude Code — see your context, rate limits and subagents live.**
 
+![cctop docked beside a Claude Code session: meters, context map and two Explore subagents](docs/screenshot.png)
+
 ```
  cctop 0.1 · opus-5-5 · ~/proj/api · up 42:17                     ● streaming
  CTX  [||||||||||||||||||||||||||||       ] 112k/200k 56%   compact @ 80%
@@ -49,7 +51,7 @@ To load it in every session, add it to the `env` block of `~/.claude/settings.js
 The band, while the panel is closed:
 
 ```
- cctop  CTX 56% ▮▮▮▮▯▯▯▯  5H 27%  WK 41%  84 tok/s  $3.42  ⑂ 3 agents
+ cctop  CTX 56% ████░░░░  5H 27%  WK 41%  84 tok/s  $3.42  ⑂ 3 agents
 ```
 
 Keys in the panel:
