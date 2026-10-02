@@ -106,3 +106,16 @@ test('targetOf', () => {
   expect(targetOf('Grep', { pattern: 'Jwt' })).toBe('"Jwt"')
   expect(targetOf('mcp__x__y', {})).toBe('')
 })
+
+test('prompt keeps stopped subagents until they complete', () => {
+  let rows = reduce(spawned(), { type: 'stop', id: 'ag-1', at: 2 })
+  rows = reduce(rows, { type: 'prompt', at: 3 })
+  expect(rows.find(r => r.id === 'ag-1')?.state).toBe('stopped')
+})
+
+test('a stopped subagent leaves the list once it has completed', () => {
+  let rows = reduce(spawned(), { type: 'stop', id: 'ag-1', at: 2 })
+  rows = reduce(rows, { type: 'complete', id: 'ag-1', at: 3 })
+  rows = reduce(rows, { type: 'prompt', at: 4 })
+  expect(rows.map(r => r.id)).toEqual([MAIN])
+})

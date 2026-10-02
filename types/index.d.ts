@@ -32,6 +32,8 @@ export type AgentRow = {
   tools: number
   now: string
   history: ToolEntry[]
+  /** The agent's loop has ended (its turn.complete arrived). */
+  isClosed?: boolean
 }
 
 export type MapCell = { color: string; isFilled: boolean }

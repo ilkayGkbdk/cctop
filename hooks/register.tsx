@@ -45,6 +45,7 @@ let pendingModel: string | undefined
 let flushTimer: { cancel: () => void } | undefined
 let mapTimer: { cancel: () => void } | undefined
 let costAtTurnStart: number | undefined
+let lastColumns = 100
 
 async function flush($: $) {
   flushTimer = undefined
@@ -86,9 +87,12 @@ async function seed($: $) {
 
 async function pollMap($: $) {
   try {
-    const usage = await $.session.usage({ breakdown: 'summary', columns: 60 })
+    const usage = await $.session.usage({ breakdown: 'summary', columns: Math.max(80, lastColumns - 34) })
     const b = usage.context.breakdown
-    if (b === undefined) return
+    if (b === undefined) {
+      await update($, mapA, markStale)
+      return
+    }
     const now = await $.clock.now()
     await update($, mapA, () => toSnapshot(b, now))
   } catch {
@@ -108,6 +112,10 @@ async function openPanel($: $) {
 
 async function doSelect($: $, id: string) {
   await update($, uiA, ui => (ui.selected === id ? { ...ui, expanded: ui.expanded === id ? null : id } : { ...ui, selected: id, confirm: null }))
+}
+
+async function selectRow($: $, id: string) {
+  await update($, uiA, (ui): UiState => (ui.selected === id ? ui : { ...ui, selected: id, confirm: null }))
 }
 
 async function doSort($: $) {
@@ -185,7 +193,6 @@ export const register: Register = (on, options) => {
   })
 
   on('prompt.submit', async ($, e, next) => {
-    await update($, stoppedA, () => []).catch(() => undefined)
     await act($, { type: 'prompt', at: await $.clock.now() }).catch(() => undefined)
     return next(e)
   })
@@ -198,19 +205,29 @@ export const register: Register = (on, options) => {
 
   on('turn.step', async function* ($, e, next) {
     const id = e.agentId ?? MAIN
-    pendingStreaming = true
-    pendingModel = e.agentId === undefined ? e.model : pendingModel
-    await act($, { type: 'step', id, at: await $.clock.now() }).catch(() => undefined)
+    try {
+      pendingStreaming = true
+      pendingModel = e.agentId === undefined ? e.model : pendingModel
+      await act($, { type: 'step', id, at: await $.clock.now() })
+    } catch {
+      // bookkeeping only; the stream goes on regardless
+    }
     const stream = next(e)
     while (true) {
       const item = await stream.next()
       if (item.done === true) return item.value
       const chunk = item.value
-      if (chunk.kind === 'text' || chunk.kind === 'thinking') {
-        samples = addSample(samples, await $.clock.now(), estimateTokens(chunk.text))
-      } else if (chunk.kind === 'stop' && chunk.usage !== null) {
-        const u = chunk.usage
-        pendingActions.push({ type: 'usage', id, tokens: u.input_tokens + u.cache_read_input_tokens + u.cache_creation_input_tokens + u.output_tokens })
+      try {
+        if (chunk.kind === 'text' || chunk.kind === 'thinking') {
+          samples = addSample(samples, await $.clock.now(), estimateTokens(chunk.text))
+        } else if (chunk.kind === 'input') {
+          samples = addSample(samples, await $.clock.now(), estimateTokens(chunk.json))
+        } else if (chunk.kind === 'stop' && chunk.usage !== null) {
+          const u = chunk.usage
+          pendingActions.push({ type: 'usage', id, tokens: u.input_tokens + u.cache_read_input_tokens + u.cache_creation_input_tokens + u.output_tokens })
+        }
+      } catch {
+        // as above
       }
       yield chunk
     }
@@ -220,6 +237,7 @@ export const register: Register = (on, options) => {
     try {
       const id = e.agentId ?? MAIN
       await act($, { type: 'complete', id, at: await $.clock.now() })
+      if (e.agentId !== undefined) await update($, stoppedA, s => s.filter(one => one !== e.agentId))
       if (e.agentId === undefined) {
         pendingStreaming = false
         await update($, turnIdA, () => null)
@@ -276,7 +294,13 @@ export const register: Register = (on, options) => {
     return next(e)
   })
 
+  on('ui.focus', { component: 'Pane', requestId: PANE }, async ($, e, next) => {
+    if (e.element?.startsWith('row-') === true) await selectRow($, e.element.slice(4)).catch(() => undefined)
+    return next(e)
+  })
+
   on('ui.render', { component: 'Pane', requestId: PANE }, async ($, e) => {
+    lastColumns = e.props.bodyColumns
     await ensureMapTimer($)
     const now = await $.clock.now()
     return Panel($.ui.resolve(e), {

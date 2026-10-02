@@ -2,8 +2,6 @@
 
 **htop for Claude Code — see your context, rate limits and subagents live.**
 
-![cctop](docs/cctop.gif)
-
 ```
  cctop 0.1 · opus-5-5 · ~/proj/api · up 42:17                     ● streaming
  CTX  [||||||||||||||||||||||||||||       ] 112k/200k 56%   compact @ 80%

@@ -51,12 +51,12 @@ export const reduce = (rows: AgentRow[], a: AgentAction): AgentRow[] => {
       return rows.map(r => {
         if (r.id !== a.id) return r
         if (r.id === MAIN) return { ...r, state: 'wait', now: '—' }
-        return r.state === 'stopped' ? r : { ...r, state: 'done', endedAt: a.at, now: '—' }
+        return r.state === 'stopped' ? { ...r, isClosed: true } : { ...r, state: 'done', endedAt: a.at, now: '—', isClosed: true }
       })
     case 'stop':
       return rows.map(r => (r.id === a.id ? { ...r, state: 'stopped', endedAt: a.at, now: 'stopped' } : r))
     case 'prompt':
-      return rows.filter(r => r.id === MAIN || !isOver(r)).map(r => (r.id === MAIN ? { ...r, state: 'run', now: 'thinking…' } : r))
+      return rows.filter(r => r.id === MAIN || r.isClosed !== true).map(r => (r.id === MAIN ? { ...r, state: 'run', now: 'thinking…' } : r))
   }
 }
 
