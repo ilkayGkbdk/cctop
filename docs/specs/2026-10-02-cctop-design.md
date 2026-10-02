@@ -75,7 +75,7 @@ tool reading transcript JSONL can only estimate these.
   a2   code-reviewer  wait     1:12    8.3k      4  Read tests/AuthTests.cs
   a3   Plan           done     2:30   21.0k     11  —
 
- F1 Help  s Sort  ↑↓ Select  k Stop agent  K Abort turn  c Compact  q Quit
+ Tab Select  s Sort  x Stop agent  a Abort turn  c Compact  q Quit
 ```
 
 - **Header meters.** Bars colour green → yellow → red by fill (thresholds in
@@ -84,19 +84,22 @@ tool reading transcript JSONL can only estimate these.
   to the session's peak.
 - **Cost line.** Session USD, a sparkline of per-turn cost (last 30 turns), the
   last turn's cost, and cache-read share of input tokens for the last turn.
-- **Context map.** The /context grid (`gridRows`) drawn as one `Raster`, each
-  square in its category colour; legend with tokens and percent per category.
+- **Context map.** The /context grid (`gridRows`) drawn as run-length coloured
+  `Text` segments per grid row (grid colours are theme keys, which `Raster`
+  cannot take), each square in its category colour; legend with tokens and percent per category.
   Below 90 body columns the grid is hidden and only the legend shows.
 - **Process list.** One row per agent: `main` plus each subagent from
   `agent.spawn`. Columns: id, agent type, state (`run` streaming or in a tool,
-  `wait` idle between steps, `done`, `stopped`), elapsed time, tokens, tool
-  count, current activity (tool + target, or `thinking…`). Finished agents stay
+  `wait` idle between steps, `done`, `stopped`), elapsed time, tokens (the agent's
+  current context size: last step's input + cache + output), tool count, current activity (tool + target, or `thinking…`). Finished agents stay
   listed, dimmed, until the next user prompt. `Enter` on a row expands its last
   20 tool calls inline.
-- **Keys** (while the panel has focus): `↑/↓` select, `s` cycle sort
-  (start / tokens / time), `Enter` expand, `k` stop selected subagent (asks
-  `y/n`), `K` abort the current turn (asks `y/n`), `c` run `/compact`,
-  `q`/`Esc` close, `?` help.
+- **Keys** (while the panel has focus; the engine allows only lowercase
+  letters and digits as hotkeys, and arrows scroll a pane): `Tab`/click
+  selects a row, `Enter` on a selected row expands it, `s` cycles sort
+  (start / tokens / time), `x` stops the selected subagent (confirm `y`/`n`),
+  `a` aborts the current turn (confirm `y`/`n`), `c` runs `/compact`,
+  `q`/`Esc` closes. The footer lists every key.
 
 ### Band (panel closed)
 
@@ -193,7 +196,7 @@ Bar colours: green below 60 %, yellow from 60 %, red from the warn threshold.
 
 - Stopping a single subagent is a **soft kill**: the engine exposes no per-agent
   abort, so cctop denies the agent's subsequent tool calls with "stopped by the
-  user via cctop"; a response already streaming finishes. `K` aborts the whole
+  user via cctop"; a response already streaming finishes. `a` aborts the whole
   turn via `$.turn.abort`.
 - Context map categories are the engine's local estimate (`summary`), so their
   total can differ slightly from the measured fill.

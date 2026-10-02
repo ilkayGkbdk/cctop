@@ -1,0 +1,15 @@
+{
+  "name": "cctop",
+  "version": "0.1.0",
+  "description": "htop for Claude Code: context, rate limits, speed, cost and subagents, live.",
+  "author": { "name": "ilkayGkbdk" },
+  "license": "MIT",
+  "repository": "https://github.com/ilkayGkbdk/cctop",
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "band": { "type": "boolean", "title": "Band", "description": "Show the one-line band above the prompt", "default": true },
+    "ctxWarnPercent": { "type": "number", "title": "Context warning %", "description": "Toast and red bar from this context fill", "default": 80 },
+    "rateWarnPercent": { "type": "number", "title": "5-hour warning %", "description": "Toast from this 5-hour window use", "default": 90 },
+    "mapPollMs": { "type": "number", "title": "Context map refresh (ms)", "description": "How often the open panel re-measures the context map", "default": 2000 }
+  }
+}
