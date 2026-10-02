@@ -11,7 +11,7 @@ import { checkAlerts } from './model/alerts'
 import { configOf } from './model/config'
 import type { Config } from './model/config'
 import { markStale, toSnapshot } from './model/contextMap'
-import { MAIN, canStop, denyFor, mainRow, reduce, targetOf } from './model/agents'
+import { MAIN, canStop, clearsFinished, denyFor, mainRow, reduce, targetOf } from './model/agents'
 import type { AgentAction } from './model/agents'
 import { applyMeasure, emptyMeters } from './model/meters'
 import { addSample, estimateTokens, pushSpark, tokPerSec } from './model/speed'
@@ -193,7 +193,7 @@ export const register: Register = (on, options) => {
   })
 
   on('prompt.submit', async ($, e, next) => {
-    await act($, { type: 'prompt', at: await $.clock.now() }).catch(() => undefined)
+    if (clearsFinished(e.origin)) await act($, { type: 'prompt', at: await $.clock.now() }).catch(() => undefined)
     return next(e)
   })
 

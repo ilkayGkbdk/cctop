@@ -3,7 +3,7 @@ import type { ElementTable } from 'claude-code'
 import type { AgentRow, MapSnapshot, Meters, UiState } from '../../types'
 import { labelOf } from '../model/agents'
 import type { Config } from '../model/config'
-import { fmtDuration, fmtReset, fmtTokens, fmtUsd, rateLabel } from '../model/format'
+import { fmtDuration, fmtReset, fmtTokens, fmtUsd, rateLabel, shortModel, shortPath } from '../model/format'
 import { levelOf } from '../model/meters'
 import { sparkline } from '../model/speed'
 import { ContextMapView } from './ContextMap'
@@ -38,7 +38,6 @@ export const Panel = (ui: ElementTable, d: PanelData, act: PanelHandlers) => {
   const { Box, Text, Button } = ui
   const m = d.meters
   const barWidth = Math.max(10, Math.min(36, d.columns - 40))
-  const home = d.cwd.replace(/^\/(?:Users|home)\/[^/]+/, '~')
   const ctxPercent = m.ctxPercent ?? 0
   const confirmText =
     d.ui.confirm === null ? undefined
@@ -48,7 +47,7 @@ export const Panel = (ui: ElementTable, d: PanelData, act: PanelHandlers) => {
   return (
     <Box flexDirection="column">
       <Box flexDirection="row" justifyContent="space-between">
-        <Text>{` cctop 0.1 · ${m.model ?? '…'} · ${home} · up ${fmtDuration(d.now - d.startedAt)}`}</Text>
+        <Text>{` cctop 0.1.1 · ${m.model !== undefined ? shortModel(m.model) : '…'} · ${shortPath(d.cwd)} · up ${fmtDuration(d.now - d.startedAt)}`}</Text>
         {m.isStreaming ? <Text color="green">● streaming </Text> : <Text dimColor>○ idle </Text>}
       </Box>
       {m.ctxWindow !== undefined && m.ctxWindow > 0 &&

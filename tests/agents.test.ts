@@ -1,6 +1,6 @@
 import { expect, test } from 'claude-code/testing'
 
-import { MAIN, STOP_MESSAGE, canStop, denyFor, labelOf, mainRow, reduce, sortRows, targetOf } from '../hooks/model/agents'
+import { MAIN, STOP_MESSAGE, canStop, clearsFinished, denyFor, labelOf, mainRow, reduce, sortRows, targetOf } from '../hooks/model/agents'
 import type { AgentRow } from '../types'
 
 const spawned = (): AgentRow[] =>
@@ -118,4 +118,10 @@ test('a stopped subagent leaves the list once it has completed', () => {
   rows = reduce(rows, { type: 'complete', id: 'ag-1', at: 3 })
   rows = reduce(rows, { type: 'prompt', at: 4 })
   expect(rows.map(r => r.id)).toEqual([MAIN])
+})
+
+test('only prompts a person sends clear finished agents', () => {
+  expect(clearsFinished({ kind: 'composer' })).toBe(true)
+  expect(clearsFinished({ kind: 'sdk' })).toBe(true)
+  expect(clearsFinished({ kind: 'task-notification' })).toBe(false)
 })

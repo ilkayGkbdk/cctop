@@ -1,7 +1,7 @@
 import { expect, test } from 'claude-code/testing'
 
 import { configOf } from '../hooks/model/config'
-import { bar, fmtDuration, fmtReset, fmtTokens, fmtUsd, rateLabel } from '../hooks/model/format'
+import { bar, fmtDuration, fmtReset, fmtTokens, fmtUsd, rateLabel, shortModel, shortPath } from '../hooks/model/format'
 import { applyMeasure, emptyMeters, levelOf } from '../hooks/model/meters'
 
 test('fmtTokens', () => {
@@ -67,4 +67,16 @@ test('applyMeasure without subscription or ledger keeps fields absent', () => {
   expect(m.costUsd).toBe(undefined)
   expect(m.ctxPercent).toBe(undefined)
   expect(m.ctxWindow).toBe(200000)
+})
+
+test('shortModel drops the vendor prefix and date suffix', () => {
+  expect(shortModel('claude-haiku-4-5-20251001')).toBe('haiku-4-5')
+  expect(shortModel('claude-opus-5-5')).toBe('opus-5-5')
+  expect(shortModel('gpt-x')).toBe('gpt-x')
+})
+
+test('shortPath keeps the last two folders', () => {
+  expect(shortPath('/Users/me/Development/Projects/claude-mods/playground')).toBe('…/claude-mods/playground')
+  expect(shortPath('/Users/me/api')).toBe('~/api')
+  expect(shortPath('/srv/app')).toBe('/srv/app')
 })

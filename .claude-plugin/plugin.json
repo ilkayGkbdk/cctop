@@ -1,6 +1,6 @@
 {
   "name": "cctop",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "htop for Claude Code: context, rate limits, speed, cost and subagents, live.",
   "author": { "name": "ilkayGkbdk" },
   "license": "MIT",

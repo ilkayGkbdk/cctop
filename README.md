@@ -2,7 +2,7 @@
 
 **htop for Claude Code — see your context, rate limits and subagents live.**
 
-![cctop docked beside a Claude Code session: meters, context map and two Explore subagents](docs/screenshot.png)
+![cctop: three Explore subagents running in parallel, live](docs/cctop.gif)
 
 ```
  cctop 0.1 · opus-5-5 · ~/proj/api · up 42:17                     ● streaming
@@ -47,6 +47,8 @@ To load it in every session, add it to the `env` block of `~/.claude/settings.js
 | --- | --- |
 | `/cctop` | open the panel (docked beside the transcript in fullscreen, above the prompt otherwise) |
 | `/cctop band` | hide / show the one-line band above the prompt |
+
+![cctop docked beside a Claude Code session](docs/screenshot.png)
 
 The band, while the panel is closed:
 

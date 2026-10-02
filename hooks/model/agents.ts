@@ -96,3 +96,6 @@ export const targetOf = (tool: string, args: Record<string, unknown>): string =>
   if (tool === 'Agent' || tool === 'Task') return str(args.description) ?? ''
   return ''
 }
+
+/** Whether a submitted prompt starts a new task (a background agent's report does not). */
+export const clearsFinished = (origin: { kind: string }): boolean => origin.kind !== 'task-notification'

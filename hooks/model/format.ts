@@ -41,3 +41,14 @@ export const rateLabel = (kind: string): string => {
   if (kind === 'spend_limit') return 'SPEND'
   return kind.slice(0, 5).toUpperCase()
 }
+
+/** `claude-haiku-4-5-20251001` → `haiku-4-5`. */
+export const shortModel = (model: string): string => model.replace(/^claude-/, '').replace(/-\d{8}$/, '')
+
+/** The last two folders of a path, `~`-relative when that is as short. */
+export const shortPath = (path: string): string => {
+  const home = /^\/(?:Users|home)\/[^/]+/.exec(path)?.[0]
+  const rel = home !== undefined ? `~${path.slice(home.length)}` : path
+  const parts = rel.split('/').filter(Boolean)
+  return parts.length <= 2 ? rel : `…/${parts.slice(-2).join('/')}`
+}

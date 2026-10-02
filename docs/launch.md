@@ -12,7 +12,7 @@ Record in a fullscreen terminal (Ghostty/kitty/iTerm, ~140×40), dark theme.
 4. `Tab` to `a2`, `x`, `y` → row turns `stopped`. (4 s)
 5. Close with `q`; the band stays above the prompt. (2 s)
 
-Tools: `vhs` or `asciinema` + `agg`. Save as `docs/cctop.gif` (< 5 MB).
+Recorded with `vhs docs/demo.tape` then `docs/make-gif.sh` (2× speed, ~1.6 MB).
 
 ## Show HN
 
