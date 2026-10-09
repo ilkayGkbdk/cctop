@@ -30,6 +30,14 @@ cctop is a Claude Code **mod**: it runs inside Claude Code and reads the engine'
 
 Requires a Claude Code build with function-hooks mods (built and tested on **2.1.287**).
 
+From the marketplace (CLI or Claude Code on the web):
+
+```
+/plugin install cctop --marketplace ilkayGkbdk/cctop
+```
+
+Or from a local clone:
+
 ```sh
 git clone https://github.com/ilkayGkbdk/cctop ~/.claude/cctop
 claude --plugin-dir ~/.claude/cctop
