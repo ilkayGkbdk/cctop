@@ -1,0 +1,18 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "cctop",
+  "description": "htop for Claude Code: context, rate limits, speed, cost and subagents, live.",
+  "owner": { "name": "ilkayGkbdk" },
+  "plugins": [
+    {
+      "name": "cctop",
+      "description": "htop for Claude Code: context, rate limits, speed, cost and subagents, live.",
+      "version": "0.1.1",
+      "author": { "name": "ilkayGkbdk" },
+      "category": "productivity",
+      "homepage": "https://github.com/ilkayGkbdk/cctop",
+      "license": "MIT",
+      "source": "./"
+    }
+  ]
+}
